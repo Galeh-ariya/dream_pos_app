@@ -1,5 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:dream_pos/data/repositories/auth_local_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:dream_pos/core/index.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,6 +16,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  final supabase = Supabase.instance.client;
 
   @override
   void initState() {
@@ -19,6 +25,19 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     )..repeat();
+    checkCurrentSession();
+  }
+
+  void checkCurrentSession() async {
+    await Future.delayed(Duration(milliseconds: 500));
+
+    final session = supabase.auth.currentSession;
+
+    if (session != null) {
+      context.go('/');
+    } else {
+      context.go('/login');
+    }
   }
 
   @override

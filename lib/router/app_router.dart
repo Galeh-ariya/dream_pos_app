@@ -1,12 +1,13 @@
 import 'package:dream_pos/presentation/screens/auth/login_screen.dart';
 import 'package:dream_pos/presentation/screens/auth/splash_screen.dart';
 import 'package:dream_pos/presentation/screens/home/main_screen.dart';
+import 'package:dream_pos/presentation/screens/home/master_screen.dart';
 import 'package:dream_pos/presentation/widgets/loading_widget.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: '/main',
+    initialLocation: '/splash',
     routes: [
       GoRoute(
         path: '/test',
@@ -15,7 +16,13 @@ class AppRouter {
       ),
       
       GoRoute(
-        path: '/main',
+        path: '/master',
+        name: 'master',
+        builder: (context, state) => const MasterScreen(),
+      ),
+      
+      GoRoute(
+        path: '/',
         name: 'main',
         builder: (context, state) => const MainScreen(),
       ),

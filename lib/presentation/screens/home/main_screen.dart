@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/colors.dart';
 import 'home_screen.dart';
+import 'master_screen.dart';
+import 'setting_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,8 +18,8 @@ class _MainScreenState extends State<MainScreen> {
   final pages = [
     const HomeScreen(),
     const _KasirScreen(),
-    const _MasterScreen(),
-    const _SettingScreen(),
+    const MasterScreen(),
+    const SettingScreen(),
   ];
 
   @override
@@ -141,74 +143,6 @@ class _KasirScreen extends StatelessWidget {
       body: Center(
         child: Text(
           'Kasir Screen - Coming Soon',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: AppColors.onSurfaceVariant,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MasterScreen extends StatelessWidget {
-  const _MasterScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainerLowest,
-        elevation: 0,
-        title: Text(
-          'MASTER',
-          style: GoogleFonts.inter(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.onSurface,
-            letterSpacing: -0.3,
-          ),
-        ),
-      ),
-      body: Center(
-        child: Text(
-          'Master Screen - Coming Soon',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: AppColors.onSurfaceVariant,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingScreen extends StatelessWidget {
-  const _SettingScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainerLowest,
-        elevation: 0,
-        title: Text(
-          'SETTING',
-          style: GoogleFonts.inter(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.onSurface,
-            letterSpacing: -0.3,
-          ),
-        ),
-      ),
-      body: Center(
-        child: Text(
-          'Setting Screen - Coming Soon',
           style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w500,

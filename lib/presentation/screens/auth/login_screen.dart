@@ -1,4 +1,8 @@
+import 'package:dream_pos/bloc/login/login_bloc.dart';
+import 'package:dream_pos/data/repositories/auth_local_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/colors.dart';
 import 'package:flutter/services.dart';
@@ -21,9 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   @override
@@ -32,12 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     super.dispose();
-  }
-
-  void _handleLogin() {
-    // Handle login logic here
-    debugPrint('Username: ${_usernameController.text}');
-    debugPrint('Password: ${_passwordController.text}');
   }
 
   @override
@@ -260,25 +256,72 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         width: double.infinity,
                         height: 48,
-                        child: FilledButton(
-                          onPressed: _handleLogin,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            'Masuk',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                              letterSpacing: 0.2,
-                            ),
-                          ),
+                        child: BlocConsumer<LoginBloc, LoginState>(
+                          listener: (context, state) {
+                            state.maybeWhen(
+                              success: (data) {
+                                AuthLocalRepository().saveAuthData(data);
+                                context.go('/');
+                              },
+                              error: (error) {
+                                // Show error message
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(SnackBar(content: Text(error)));
+                              },
+                              orElse: () {},
+                            );
+                          },
+                          builder: (context, state) {
+                            return state.maybeWhen(
+                              loading: () {
+                                return FilledButton(
+                                  onPressed: null,
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: AppColors.primary,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                );
+                              },
+                              orElse: () {
+                                return FilledButton(
+                                  onPressed: () {
+                                     context.read<LoginBloc>().add(
+                                        LoginEvent.login(
+                                          _usernameController.text,
+                                          _passwordController.text,
+                                        ),
+                                      );
+                                  },
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: AppColors.primary,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    'Masuk',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ),
                     ],
