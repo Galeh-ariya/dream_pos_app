@@ -2,6 +2,9 @@ import 'package:dream_pos/presentation/screens/auth/login_screen.dart';
 import 'package:dream_pos/presentation/screens/auth/splash_screen.dart';
 import 'package:dream_pos/presentation/screens/home/main_screen.dart';
 import 'package:dream_pos/presentation/screens/home/master_screen.dart';
+import 'package:dream_pos/data/models/response/outlet_reponse_model.dart';
+import 'package:dream_pos/presentation/screens/masters/outlets/form_regis_outlet_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/outlets/list_outlet_screen.dart';
 import 'package:dream_pos/presentation/widgets/loading_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,13 +17,30 @@ class AppRouter {
         name: 'test',
         builder: (context, state) => const LoadingWidget(),
       ),
-      
+
       GoRoute(
         path: '/master',
         name: 'master',
         builder: (context, state) => const MasterScreen(),
+        routes: [
+          GoRoute(
+            path: 'outlets',
+            name: 'master-outlets',
+            builder: (context, state) => const ListOutletScreen(),
+            routes: [
+              GoRoute(
+                path: 'form-outlet',
+                name: 'master-form-outlet',
+                builder: (context, state) {
+                  final selectedOutlet = state.extra as OutletResponseModel?;
+                  return FormRegisOutletScreen(outlet: selectedOutlet);
+                },
+              ),
+            ],
+          ),
+        ],
       ),
-      
+
       GoRoute(
         path: '/',
         name: 'main',

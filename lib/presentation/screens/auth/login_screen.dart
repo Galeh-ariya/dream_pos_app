@@ -15,14 +15,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController _usernameController;
+  late TextEditingController _emailController;
   late TextEditingController _passwordController;
   bool _obscurePassword = true;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
+    _emailController = TextEditingController();
     _passwordController = TextEditingController();
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     super.dispose();
@@ -112,9 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Username Label
+                      // Email Label
                       Text(
-                        'USERNAME',
+                        'EMAIL',
                         style: GoogleFonts.inter(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -124,16 +124,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 8),
 
-                      // Username Field
+                      // Email Field
                       TextField(
-                        controller: _usernameController,
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        autofillHints: const [AutofillHints.email],
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: AppColors.onSurface,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'masukkan username',
+                          hintText: 'masukkan email',
                           hintStyle: GoogleFonts.inter(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -260,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           listener: (context, state) {
                             state.maybeWhen(
                               success: (data) {
-                                AuthLocalRepository().saveAuthData(data);
+                                AuthLocalRepository().saveUserData(data);
                                 context.go('/');
                               },
                               error: (error) {
@@ -294,12 +297,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               orElse: () {
                                 return FilledButton(
                                   onPressed: () {
-                                     context.read<LoginBloc>().add(
-                                        LoginEvent.login(
-                                          _usernameController.text,
-                                          _passwordController.text,
-                                        ),
-                                      );
+                                    context.read<LoginBloc>().add(
+                                      LoginEvent.login(
+                                        _emailController.text.trim(),
+                                        _passwordController.text,
+                                      ),
+                                    );
                                   },
                                   style: FilledButton.styleFrom(
                                     backgroundColor: AppColors.primary,

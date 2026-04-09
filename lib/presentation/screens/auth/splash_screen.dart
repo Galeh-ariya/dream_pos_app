@@ -1,5 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
+import 'package:dream_pos/data/models/response/user_data_response_model.dart';
 import 'package:dream_pos/data/repositories/auth_local_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:dream_pos/core/index.dart';
@@ -34,10 +37,35 @@ class _SplashScreenState extends State<SplashScreen>
     final session = supabase.auth.currentSession;
 
     if (session != null) {
+      fetchUser(session);
       context.go('/');
     } else {
       context.go('/login');
     }
+  }
+
+  Future<String> fetchUser(session) async {
+    final id = session?.user.id;
+    // debugPrint('Current User ID: $id');
+
+      final data = await supabase
+          .from('profiles')
+          .select('''
+            id,
+            full_name,
+            role,
+            jabatan_id,
+            email,
+            outlets!outlets_owner_id_fkey(id, name, address, owner_id, fifo_lifo)
+            ''')
+              .eq('id', id);
+
+    // debugPrint('User Dataku: ${data.toString()}');
+    if (data.isNotEmpty) {
+      final userModel = UserDataModel.fromJson(jsonEncode(data[0]));
+      await AuthLocalRepository().updateUserData(userModel);
+    }
+    return data.toString();
   }
 
   @override

@@ -1,6 +1,11 @@
+import 'package:dream_pos/bloc/outlets/del_outlet/del_outlet_bloc.dart';
+import 'package:dream_pos/bloc/outlets/list_outlet/list_outlet_bloc.dart';
 import 'package:dream_pos/bloc/login/login_bloc.dart';
 import 'package:dream_pos/bloc/logout/logout_bloc.dart';
+import 'package:dream_pos/bloc/outlets/store_outlet/store_outlet_bloc.dart';
+import 'package:dream_pos/bloc/outlets/update_outlet/update_outlet_bloc.dart';
 import 'package:dream_pos/data/repositories/auth_repository.dart';
+import 'package:dream_pos/data/repositories/outlets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:dream_pos/core/index.dart';
 import 'package:dream_pos/router/app_router.dart';
@@ -28,6 +33,10 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => LoginBloc(AuthRepository())),
         BlocProvider(create: (context) => LogoutBloc(AuthRepository())),
+        BlocProvider(create: (context) => ListOutletBloc(OutletsRepository())),
+        BlocProvider(create: (context) => StoreOutletBloc(OutletsRepository())),
+        BlocProvider(create: (context) => DelOutletBloc(OutletsRepository())),
+        BlocProvider(create: (context) => UpdateOutletBloc(OutletsRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,

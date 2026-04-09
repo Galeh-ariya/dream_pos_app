@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class MasterScreen extends StatelessWidget {
   const MasterScreen({super.key});
@@ -16,6 +17,14 @@ class MasterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = <_MasterMenuItem>[
+      _MasterMenuItem(
+        title: 'Kelola Outlet',
+        subtitle: 'Pengaturan pembuatan outltet.',
+        icon: Icons.person_outline_rounded,
+        iconColor: Color(0xFF2F6CFF),
+        iconBackground: Color(0xFFD9E7FF),
+        onTap: () => context.push('/master/outlets'),
+      ),
       const _MasterMenuItem(
         title: 'Kelola User',
         subtitle: 'Pengaturan hak akses dan profil pengguna sistem.',
@@ -129,61 +138,70 @@ class _MasterCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.fromLTRB(22, 24, 18, 20),
       decoration: BoxDecoration(
         color: MasterScreen._cardBackground,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: MasterScreen._cardBorder),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: item.iconBackground,
-                  borderRadius: BorderRadius.circular(12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: item.onTap,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(22, 24, 18, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: item.iconBackground,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(item.icon, color: item.iconColor, size: 24),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        item.title,
+                        style: GoogleFonts.inter(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          color: MasterScreen._headlineColor,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                child: Icon(item.icon, color: item.iconColor, size: 24),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  item.title,
+                const SizedBox(height: 12),
+                Text(
+                  item.subtitle,
                   style: GoogleFonts.inter(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: MasterScreen._headlineColor,
-                    letterSpacing: -0.2,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: MasterScreen._bodyColor,
+                    height: 1.35,
+                    letterSpacing: -0.1,
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            item.subtitle,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: MasterScreen._bodyColor,
-              height: 1.35,
-              letterSpacing: -0.1,
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    color: MasterScreen._arrowColor,
+                    size: 31,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Icon(
-              Icons.arrow_forward_rounded,
-              color: MasterScreen._arrowColor,
-              size: 31,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -196,6 +214,7 @@ class _MasterMenuItem {
     required this.icon,
     required this.iconColor,
     required this.iconBackground,
+    this.onTap,
   });
 
   final String title;
@@ -203,4 +222,5 @@ class _MasterMenuItem {
   final IconData icon;
   final Color iconColor;
   final Color iconBackground;
+  final VoidCallback? onTap;
 }
