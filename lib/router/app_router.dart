@@ -3,8 +3,12 @@ import 'package:dream_pos/presentation/screens/auth/splash_screen.dart';
 import 'package:dream_pos/presentation/screens/home/main_screen.dart';
 import 'package:dream_pos/presentation/screens/home/master_screen.dart';
 import 'package:dream_pos/data/models/response/outlet_reponse_model.dart';
+import 'package:dream_pos/presentation/screens/masters/item_categories/form_item_category_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/item_categories/list_item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/form_regis_outlet_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/list_outlet_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/units/form_unit_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/units/list_unit_screen.dart';
 import 'package:dream_pos/presentation/widgets/loading_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,8 +17,8 @@ class AppRouter {
     initialLocation: '/splash',
     routes: [
       GoRoute(
-        path: '/test',
-        name: 'test',
+        path: '/loading',
+        name: 'loading',
         builder: (context, state) => const LoadingWidget(),
       ),
 
@@ -35,6 +39,30 @@ class AppRouter {
                   final selectedOutlet = state.extra as OutletResponseModel?;
                   return FormRegisOutletScreen(outlet: selectedOutlet);
                 },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'units',
+            name: 'master-units',
+            builder: (context, state) => const ListUnitScreen(),
+            routes: [
+              GoRoute(
+                path: 'form-unit',
+                name: 'master-form-unit',
+                builder: (context, state) => const FormUnitScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'item-categories',
+            name: 'master-item-categories',
+            builder: (context, state) => const ListItemCategoryScreen(),
+            routes: [
+              GoRoute(
+                path: 'form-item-category',
+                name: 'master-form-item-category',
+                builder: (context, state) => const FormItemCategoryScreen(),
               ),
             ],
           ),

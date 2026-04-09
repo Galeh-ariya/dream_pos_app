@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen>
 
                   // Greeting
                   Text(
-                    'Selamat Datang, Admin',
+                    'Selamat Datang',
                     style: GoogleFonts.inter(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
@@ -59,10 +59,6 @@ class _HomeScreenState extends State<HomeScreen>
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 32),
-
-                  // Dashboard Overview Section
-                  _buildDashboardOverview(),
                   const SizedBox(height: 32),
 
                   // Barang Terlaris Hari ini Section
@@ -206,100 +202,100 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildDashboardOverview() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'DASHBOARD OVERVIEW',
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-            letterSpacing: 0.5,
-          ),
-        ),
-        const SizedBox(height: 16),
+  // Widget _buildDashboardOverview() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         'DASHBOARD OVERVIEW',
+  //         style: GoogleFonts.inter(
+  //           fontSize: 12,
+  //           fontWeight: FontWeight.w600,
+  //           color: AppColors.primary,
+  //           letterSpacing: 0.5,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 16),
 
-        // Total Sales Card
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(AppRadii.lg),
-            border: Border.all(
-              color: AppColors.outlineVariant.withOpacity(0.1),
-              width: 1,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Total Sales Today',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.onSurfaceVariant,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Rp 12.450.000',
-                    style: GoogleFonts.inter(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.onSurface,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.trending_up,
-                        size: 14,
-                        color: const Color(0xFF26A69A),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '+14% from yesterday',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF26A69A),
-                          letterSpacing: 0.2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.camera_alt_outlined,
-                    size: 28,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  //       // Total Sales Card
+  //       Container(
+  //         padding: const EdgeInsets.all(20),
+  //         decoration: BoxDecoration(
+  //           color: AppColors.surfaceContainerLowest,
+  //           borderRadius: BorderRadius.circular(AppRadii.lg),
+  //           border: Border.all(
+  //             color: AppColors.outlineVariant.withOpacity(0.1),
+  //             width: 1,
+  //           ),
+  //         ),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   'Total Sales Today',
+  //                   style: GoogleFonts.inter(
+  //                     fontSize: 14,
+  //                     fontWeight: FontWeight.w500,
+  //                     color: AppColors.onSurfaceVariant,
+  //                     letterSpacing: 0.2,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 8),
+  //                 Text(
+  //                   'Rp 12.450.000',
+  //                   style: GoogleFonts.inter(
+  //                     fontSize: 24,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: AppColors.onSurface,
+  //                     letterSpacing: -0.5,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 8),
+  //                 Row(
+  //                   children: [
+  //                     Icon(
+  //                       Icons.trending_up,
+  //                       size: 14,
+  //                       color: const Color(0xFF26A69A),
+  //                     ),
+  //                     const SizedBox(width: 4),
+  //                     Text(
+  //                       '+14% from yesterday',
+  //                       style: GoogleFonts.inter(
+  //                         fontSize: 12,
+  //                         fontWeight: FontWeight.w500,
+  //                         color: const Color(0xFF26A69A),
+  //                         letterSpacing: 0.2,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //             Container(
+  //               width: 60,
+  //               height: 60,
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.primary.withOpacity(0.1),
+  //                 borderRadius: BorderRadius.circular(12),
+  //               ),
+  //               child: Center(
+  //                 child: Icon(
+  //                   Icons.camera_alt_outlined,
+  //                   size: 28,
+  //                   color: AppColors.primary,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildBestSellingSection() {
     final products = [
@@ -317,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Barang Terlaris Hari ini',
+              'Statistik Penjualan Hari Ini',
               style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -349,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         const SizedBox(height: 16),
         Text(
-          'Produk dengan volume penjualan tertinggi.',
+          'Toko dengan volume penjualan tertinggi.',
           style: GoogleFonts.inter(
             fontSize: 12,
             fontWeight: FontWeight.w400,

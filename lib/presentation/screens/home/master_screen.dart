@@ -20,13 +20,13 @@ class MasterScreen extends StatelessWidget {
       _MasterMenuItem(
         title: 'Kelola Outlet',
         subtitle: 'Pengaturan pembuatan outltet.',
-        icon: Icons.person_outline_rounded,
+        icon: Icons.storefront_outlined,
         iconColor: Color(0xFF2F6CFF),
         iconBackground: Color(0xFFD9E7FF),
         onTap: () => context.push('/master/outlets'),
       ),
       const _MasterMenuItem(
-        title: 'Kelola User',
+        title: 'Kelola Karyawan',
         subtitle: 'Pengaturan hak akses dan profil pengguna sistem.',
         icon: Icons.person_outline_rounded,
         iconColor: Color(0xFF2F6CFF),
@@ -36,22 +36,24 @@ class MasterScreen extends StatelessWidget {
         title: 'Kelola Item',
         subtitle: 'Manajemen stok barang gudang.',
         icon: Icons.inventory_2_outlined,
-        iconColor: Color(0xFF169B4F),
-        iconBackground: Color(0xFFD7F3E3),
+        iconColor: Color(0xFF2F6CFF),
+        iconBackground: Color(0xFFDCE5FF),
       ),
-      const _MasterMenuItem(
+      _MasterMenuItem(
         title: 'Kelola Kategori Barang',
         subtitle: 'Manajemen kategori barang untuk setiap stok barang.',
         icon: Icons.category_outlined,
         iconColor: Color(0xFF2A66D9),
         iconBackground: Color(0xFFDCE5FF),
+        onTap: () => context.push('/master/item-categories'),
       ),
-      const _MasterMenuItem(
+      _MasterMenuItem(
         title: 'Kelola Satuan',
         subtitle: 'Definisi unit pengukuran untuk setiap item barang.',
         icon: Icons.straighten_rounded,
-        iconColor: Color(0xFF4B5565),
+        iconColor: Color(0xFF2F6CFF),
         iconBackground: Color(0xFFE9EDF3),
+        onTap: () => context.push('/master/units'),
       ),
     ];
 
