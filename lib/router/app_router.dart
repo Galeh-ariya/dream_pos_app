@@ -9,6 +9,7 @@ import 'package:dream_pos/presentation/screens/masters/outlets/form_regis_outlet
 import 'package:dream_pos/presentation/screens/masters/outlets/list_outlet_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/units/form_unit_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/units/list_unit_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/units/unit_screen.dart';
 import 'package:dream_pos/presentation/widgets/loading_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -45,12 +46,35 @@ class AppRouter {
           GoRoute(
             path: 'units',
             name: 'master-units',
-            builder: (context, state) => const ListUnitScreen(),
+            builder: (context, state) => const UnitScreen(),
             routes: [
+              GoRoute(
+                path: 'list-unit',
+                name: 'master-list-unit',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  final selectedOutletId = payload?['outletId'] as String?;
+
+                  if (selectedOutletId == null || selectedOutletId.isEmpty) {
+                    return const UnitScreen();
+                  }
+
+                  return ListUnitScreen(
+                    selectedOutletId: selectedOutletId,
+                    selectedOutletName: payload?['outletName'] as String?,
+                  );
+                },
+              ),
               GoRoute(
                 path: 'form-unit',
                 name: 'master-form-unit',
-                builder: (context, state) => const FormUnitScreen(),
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  return FormUnitScreen(
+                    initialUnitName: payload?['initialUnitName'] as String?,
+                    initialOutletId: payload?['initialOutletId'] as String?,
+                  );
+                },
               ),
             ],
           ),

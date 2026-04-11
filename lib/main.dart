@@ -4,8 +4,12 @@ import 'package:dream_pos/bloc/login/login_bloc.dart';
 import 'package:dream_pos/bloc/logout/logout_bloc.dart';
 import 'package:dream_pos/bloc/outlets/store_outlet/store_outlet_bloc.dart';
 import 'package:dream_pos/bloc/outlets/update_outlet/update_outlet_bloc.dart';
+import 'package:dream_pos/bloc/units/del_unit/del_unit_bloc.dart';
+import 'package:dream_pos/bloc/units/list_unit/list_unit_bloc.dart';
+import 'package:dream_pos/bloc/units/store_unit/store_unit_bloc.dart';
 import 'package:dream_pos/data/repositories/auth_repository.dart';
 import 'package:dream_pos/data/repositories/outlets_repository.dart';
+import 'package:dream_pos/data/repositories/units_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:dream_pos/core/index.dart';
 import 'package:dream_pos/router/app_router.dart';
@@ -18,7 +22,7 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
 
   await Supabase.initialize(
-    url: 'https://supadream.digitaldream.or.id',
+    url: '${dotenv.env['URL']}',
     anonKey: '${dotenv.env['ANONKEY']}',
   );
   runApp(MyApp());
@@ -37,6 +41,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => StoreOutletBloc(OutletsRepository())),
         BlocProvider(create: (context) => DelOutletBloc(OutletsRepository())),
         BlocProvider(create: (context) => UpdateOutletBloc(OutletsRepository())),
+        BlocProvider(create: (context) => StoreUnitBloc(UnitRepository())),
+        BlocProvider(create: (context) => ListUnitBloc(UnitRepository())),
+        BlocProvider(create: (context) => DelUnitBloc(UnitRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,

@@ -1,10 +1,21 @@
 import 'package:dream_pos/core/colors.dart';
+import 'package:dream_pos/bloc/units/del_unit/del_unit_bloc.dart';
+import 'package:dream_pos/bloc/units/list_unit/list_unit_bloc.dart';
+import 'package:dream_pos/data/models/response/unit_response_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ListUnitScreen extends StatefulWidget {
-  const ListUnitScreen({super.key});
+  const ListUnitScreen({
+    super.key,
+    required this.selectedOutletId,
+    this.selectedOutletName,
+  });
+
+  final String selectedOutletId;
+  final String? selectedOutletName;
 
   @override
   State<ListUnitScreen> createState() => _ListUnitScreenState();
@@ -12,8 +23,13 @@ class ListUnitScreen extends StatefulWidget {
 
 class _ListUnitScreenState extends State<ListUnitScreen> {
   final TextEditingController _searchController = TextEditingController();
+  int? _deletingUnitId;
 
-  static const List<String> _allUnits = ['Box', 'Centimeter', 'Kg', 'Carton'];
+  @override
+  void initState() {
+    super.initState();
+    _fetchUnits();
+  }
 
   @override
   void dispose() {
@@ -23,11 +39,6 @@ class _ListUnitScreenState extends State<ListUnitScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final query = _searchController.text.trim().toLowerCase();
-    final filteredUnits = _allUnits
-        .where((unit) => unit.toLowerCase().contains(query))
-        .toList(growable: false);
-
     return Scaffold(
       backgroundColor: AppColors.surface,
       appBar: AppBar(
@@ -49,90 +60,199 @@ class _ListUnitScreenState extends State<ListUnitScreen> {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (_) => setState(() {}),
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.onSurface,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Cari satuan...',
-                    hintStyle: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.onSurfaceVariant,
-                    ),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: AppColors.onSurfaceVariant,
-                      size: 21,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 12,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.surfaceContainerHigh,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(
-                        color: AppColors.outlineVariant.withOpacity(0.25),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(
-                        color: AppColors.primary.withOpacity(0.55),
-                        width: 1.4,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              FilledButton.icon(
-                onPressed: _onCreateUnit,
-                icon: const Icon(Icons.add_rounded, size: 18),
-                label: Text(
-                  'Tambah Satuan',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 14,
-                  ),
-                  minimumSize: const Size(0, 52),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-              ),
-            ],
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ListUnitBloc, ListUnitState>(
+            listener: (context, state) {
+              state.whenOrNull(
+                error: (message) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(message)));
+                },
+              );
+            },
           ),
-          const SizedBox(height: 16),
-          ...filteredUnits.map(_buildUnitCard),
-          if (filteredUnits.isEmpty) _buildEmptySearchState(),
+          BlocListener<DelUnitBloc, DelUnitState>(
+            listener: (context, state) {
+              state.whenOrNull(
+                success: (message) {
+                  if (!mounted) return;
+
+                  setState(() {
+                    _deletingUnitId = null;
+                  });
+
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(message)));
+
+                  _fetchUnits();
+                },
+                error: (message) {
+                  if (!mounted) return;
+
+                  setState(() {
+                    _deletingUnitId = null;
+                  });
+
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(message)));
+                },
+              );
+            },
+          ),
         ],
+        child: BlocBuilder<ListUnitBloc, ListUnitState>(
+          builder: (context, state) {
+            return state.when(
+              initial: _buildLoadingBody,
+              loading: _buildLoadingBody,
+              success: _buildSuccessBody,
+              error: _buildErrorBody,
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildUnitCard(String unitName) {
+  Widget _buildLoadingBody() {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildSuccessBody(List<UnitResponseModel> units) {
+    final query = _searchController.text.trim().toLowerCase();
+    final filteredUnits = units
+        .where((unit) => (unit.namaSatuan ?? '').toLowerCase().contains(query))
+        .toList(growable: false);
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+      children: [
+        if ((widget.selectedOutletName ?? '').trim().isNotEmpty)
+          _buildSelectedOutletBanner(),
+        if ((widget.selectedOutletName ?? '').trim().isNotEmpty)
+          const SizedBox(height: 12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _searchController,
+                onChanged: (_) => setState(() {}),
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.onSurface,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Cari satuan...',
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search_rounded,
+                    color: AppColors.onSurfaceVariant,
+                    size: 21,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.surfaceContainerHigh,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(
+                      color: AppColors.outlineVariant.withOpacity(0.25),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide(
+                      color: AppColors.primary.withOpacity(0.55),
+                      width: 1.4,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            FilledButton.icon(
+              onPressed: _onCreateUnit,
+              icon: const Icon(Icons.add_rounded, size: 18),
+              label: Text(
+                'Tambah Satuan',
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 14,
+                ),
+                minimumSize: const Size(0, 52),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        ...filteredUnits.map(_buildUnitCard),
+        if (filteredUnits.isEmpty)
+          _buildEmptySearchState(isSearch: query.isNotEmpty),
+      ],
+    );
+  }
+
+  Widget _buildErrorBody(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.error_outline_rounded,
+              size: 40,
+              color: Color(0xFFDE2B2B),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 14),
+            FilledButton(
+              onPressed: _fetchUnits,
+              child: const Text('Coba Lagi'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUnitCard(UnitResponseModel unit) {
+    final unitName = (unit.namaSatuan ?? '').trim().isEmpty
+        ? '-'
+        : unit.namaSatuan!.trim();
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -154,32 +274,44 @@ class _ListUnitScreenState extends State<ListUnitScreen> {
               ),
             ),
           ),
-          IconButton(
-            onPressed: () => _onEditUnit(unitName),
-            splashRadius: 18,
-            visualDensity: VisualDensity.compact,
-            icon: Icon(
-              Icons.edit_rounded,
-              size: 20,
-              color: AppColors.onSurfaceVariant,
-            ),
-          ),
-          IconButton(
-            onPressed: () => _onDeleteUnit(unitName),
-            splashRadius: 18,
-            visualDensity: VisualDensity.compact,
-            icon: const Icon(
-              Icons.delete_outline_rounded,
-              size: 22,
-              color: Color(0xFFDE2B2B),
-            ),
+          BlocBuilder<DelUnitBloc, DelUnitState>(
+            builder: (context, state) {
+              final isDeletingThisRow =
+                  _deletingUnitId != null && _deletingUnitId == unit.id;
+              final isBlocDeleting = state.maybeWhen(
+                loading: () => true,
+                orElse: () => false,
+              );
+
+              return IconButton(
+                onPressed: (isBlocDeleting || isDeletingThisRow)
+                    ? null
+                    : () => _onDeleteUnit(unit),
+                splashRadius: 18,
+                visualDensity: VisualDensity.compact,
+                icon: isDeletingThisRow
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Color(0xFFDE2B2B),
+                        ),
+                      )
+                    : const Icon(
+                        Icons.delete_outline_rounded,
+                        size: 22,
+                        color: Color(0xFFDE2B2B),
+                      ),
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _buildEmptySearchState() {
+  Widget _buildEmptySearchState({required bool isSearch}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       decoration: BoxDecoration(
@@ -187,7 +319,9 @@ class _ListUnitScreenState extends State<ListUnitScreen> {
         borderRadius: BorderRadius.circular(14),
       ),
       child: Text(
-        'Satuan tidak ditemukan.',
+        isSearch
+            ? 'Satuan tidak ditemukan.'
+            : 'Belum ada satuan pada outlet ini.',
         style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w600,
@@ -197,19 +331,100 @@ class _ListUnitScreenState extends State<ListUnitScreen> {
     );
   }
 
-  void _onCreateUnit() {
-    context.pushNamed('master-form-unit');
-  }
-
-  void _onEditUnit(String unitName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Edit satuan $unitName belum tersedia.')),
+  void _fetchUnits() {
+    context.read<ListUnitBloc>().add(
+      ListUnitEvent.fetchUnits(widget.selectedOutletId),
     );
   }
 
-  void _onDeleteUnit(String unitName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Hapus satuan $unitName belum tersedia.')),
+  Widget _buildSelectedOutletBanner() {
+    final outletName = widget.selectedOutletName?.trim() ?? '-';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.storefront_rounded,
+            size: 18,
+            color: AppColors.primary,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Outlet: $outletName',
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onSurface,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  Future<void> _onCreateUnit() async {
+    final result = await context.pushNamed(
+      'master-form-unit',
+      extra: {'initialOutletId': widget.selectedOutletId},
+    );
+
+    if (!mounted) return;
+    if (result != null) {
+      _fetchUnits();
+    }
+  }
+
+  Future<void> _onDeleteUnit(UnitResponseModel unit) async {
+    final unitId = unit.id;
+    final outletId = unit.outletId;
+    final unitName = (unit.namaSatuan ?? '-').trim().isEmpty
+        ? '-'
+        : unit.namaSatuan!.trim();
+
+    if (unitId == null || outletId == null || outletId.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Data unit tidak valid. Gagal menghapus satuan.'),
+        ),
+      );
+      return;
+    }
+
+    final isConfirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Hapus Satuan'),
+          content: Text('Yakin ingin menghapus satuan $unitName?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Batal'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFDE2B2B),
+              ),
+              child: const Text('Hapus'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (isConfirmed != true || !mounted) return;
+
+    setState(() {
+      _deletingUnitId = unitId;
+    });
+
+    context.read<DelUnitBloc>().add(DelUnitEvent.delUnit(unitId, outletId));
   }
 }
