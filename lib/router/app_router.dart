@@ -4,6 +4,8 @@ import 'package:dream_pos/presentation/screens/home/main_screen.dart';
 import 'package:dream_pos/presentation/screens/home/master_screen.dart';
 import 'package:dream_pos/data/models/response/outlet_reponse_model.dart';
 import 'package:dream_pos/presentation/screens/masters/employees/employee_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/employees/form_employee_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/employees/list_employee_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/form_item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/list_item_category_screen.dart';
@@ -121,6 +123,47 @@ class AppRouter {
             path: 'employee',
             name: 'master-employee',
             builder: (context, state) => const EmployeeScreen(),
+            routes: [
+              GoRoute(
+                path: 'list-employee',
+                name: 'master-list-employee',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  final selectedOutletId = payload?['outletId'] as String?;
+
+                  if (selectedOutletId == null || selectedOutletId.isEmpty) {
+                    return const EmployeeScreen();
+                  }
+
+                  return ListEmployeeScreen(
+                    selectedOutletId: selectedOutletId,
+                    selectedOutletName: payload?['outletName'] as String?,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'form-employee',
+                name: 'master-form-employee',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  final selectedOutletId =
+                      payload?['selectedOutletId'] as String?;
+
+                  if (selectedOutletId == null || selectedOutletId.isEmpty) {
+                    return const EmployeeScreen();
+                  }
+
+                  return FormEmployeeScreen(
+                    selectedOutletId: selectedOutletId,
+                    selectedOutletName:
+                        payload?['selectedOutletName'] as String?,
+                    initialEmail: payload?['initialEmail'] as String?,
+                    initialFullName: payload?['initialFullName'] as String?,
+                    initialJabatanId: payload?['initialJabatanId'] as int?,
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: 'positions',

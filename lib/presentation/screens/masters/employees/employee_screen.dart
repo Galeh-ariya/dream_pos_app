@@ -3,6 +3,7 @@ import 'package:dream_pos/core/colors.dart';
 import 'package:dream_pos/data/models/response/outlet_reponse_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EmployeeScreen extends StatefulWidget {
@@ -23,10 +24,8 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
     context.read<ListOutletBloc>().add(const ListOutletEvent.fetchOutlets());
   }
 
-  void _onSelectOutlet(OutletResponseModel outlet) {
+  void _openListEmployee(OutletResponseModel outlet) {
     final outletId = outlet.id;
-    final outletName = outlet.name?.trim();
-
     if (outletId == null || outletId.trim().isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -34,12 +33,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Outlet ${(outletName == null || outletName.isEmpty) ? '-' : outletName} dipilih. Halaman daftar employee menyusul.',
-        ),
-      ),
+    context.pushNamed(
+      'master-list-employee',
+      extra: {'outletId': outletId, 'outletName': outlet.name},
     );
   }
 
@@ -185,7 +181,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
     final name = outlet.name?.trim();
     return InkWell(
       borderRadius: BorderRadius.circular(12),
-      onTap: () => _onSelectOutlet(outlet),
+      onTap: () => _openListEmployee(outlet),
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -227,7 +223,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Lihat employee outlet',
+                    'Lihat daftar employee',
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
