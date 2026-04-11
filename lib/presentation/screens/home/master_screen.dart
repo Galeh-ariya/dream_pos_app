@@ -25,12 +25,21 @@ class MasterScreen extends StatelessWidget {
         iconBackground: Color(0xFFD9E7FF),
         onTap: () => context.push('/master/outlets'),
       ),
-      const _MasterMenuItem(
+      _MasterMenuItem(
         title: 'Kelola Karyawan',
         subtitle: 'Pengaturan hak akses dan profil pengguna sistem.',
         icon: Icons.person_outline_rounded,
         iconColor: Color(0xFF2F6CFF),
         iconBackground: Color(0xFFD9E7FF),
+        onTap: () => context.push('/master/employee'),
+      ),
+      _MasterMenuItem(
+        title: 'Kelola Jabatan',
+        subtitle: 'Pengaturan jabatan untuk setiap karyawan.',
+        icon: Icons.badge_outlined,
+        iconColor: Color(0xFF2F6CFF),
+        iconBackground: Color(0xFFDCE5FF),
+        onTap: () => context.push('/master/positions'),
       ),
       const _MasterMenuItem(
         title: 'Kelola Item',

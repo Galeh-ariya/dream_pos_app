@@ -3,11 +3,15 @@ import 'package:dream_pos/presentation/screens/auth/splash_screen.dart';
 import 'package:dream_pos/presentation/screens/home/main_screen.dart';
 import 'package:dream_pos/presentation/screens/home/master_screen.dart';
 import 'package:dream_pos/data/models/response/outlet_reponse_model.dart';
+import 'package:dream_pos/presentation/screens/masters/employees/employee_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/form_item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/list_item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/form_regis_outlet_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/list_outlet_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/positions/form_position_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/positions/list_position_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/positions/position_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/units/form_unit_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/units/list_unit_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/units/unit_screen.dart';
@@ -107,6 +111,45 @@ class AppRouter {
                 builder: (context, state) {
                   final payload = state.extra as Map<String, dynamic>?;
                   return FormItemCategoryScreen(
+                    selectedOutletId: payload?['selectedOutletId'] as String?,
+                  );
+                },
+              ),
+            ],
+          ),
+          GoRoute(
+            path: 'employee',
+            name: 'master-employee',
+            builder: (context, state) => const EmployeeScreen(),
+          ),
+          GoRoute(
+            path: 'positions',
+            name: 'master-position',
+            builder: (context, state) => const PositionScreen(),
+            routes: [
+              GoRoute(
+                path: 'list-position',
+                name: 'master-list-position',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  final selectedOutletId = payload?['outletId'] as String?;
+
+                  if (selectedOutletId == null || selectedOutletId.isEmpty) {
+                    return const PositionScreen();
+                  }
+
+                  return ListPositionScreen(
+                    selectedOutletId: selectedOutletId,
+                    selectedOutletName: payload?['outletName'] as String?,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'form-position',
+                name: 'master-form-position',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  return FormPositionScreen(
                     selectedOutletId: payload?['selectedOutletId'] as String?,
                   );
                 },

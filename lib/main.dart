@@ -7,12 +7,16 @@ import 'package:dream_pos/bloc/login/login_bloc.dart';
 import 'package:dream_pos/bloc/logout/logout_bloc.dart';
 import 'package:dream_pos/bloc/outlets/store_outlet/store_outlet_bloc.dart';
 import 'package:dream_pos/bloc/outlets/update_outlet/update_outlet_bloc.dart';
+import 'package:dream_pos/bloc/positions/del_position/del_position_bloc.dart';
+import 'package:dream_pos/bloc/positions/list_position/list_position_bloc.dart';
+import 'package:dream_pos/bloc/positions/store_position/store_position_bloc.dart';
 import 'package:dream_pos/bloc/units/del_unit/del_unit_bloc.dart';
 import 'package:dream_pos/bloc/units/list_unit/list_unit_bloc.dart';
 import 'package:dream_pos/bloc/units/store_unit/store_unit_bloc.dart';
 import 'package:dream_pos/data/repositories/auth_repository.dart';
 import 'package:dream_pos/data/repositories/item_categories_repository.dart';
 import 'package:dream_pos/data/repositories/outlets_repository.dart';
+import 'package:dream_pos/data/repositories/position_repository.dart';
 import 'package:dream_pos/data/repositories/units_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:dream_pos/core/index.dart';
@@ -51,6 +55,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => ListItemCategoryBloc(ItemCategoriesRepository())),
         BlocProvider(create: (context) => DelItemCategoryBloc(ItemCategoriesRepository())),
         BlocProvider(create: (context) => StoreItemCategoryBloc(ItemCategoriesRepository())),
+        BlocProvider(create: (context) => ListPositionBloc(PositionRepository())),
+        BlocProvider(create: (context) => StorePositionBloc(PositionRepository())),
+        BlocProvider(create: (context) => DelPositionBloc(PositionRepository())),
+
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,
