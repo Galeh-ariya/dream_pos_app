@@ -4,6 +4,7 @@ import 'package:dream_pos/presentation/screens/home/main_screen.dart';
 import 'package:dream_pos/presentation/screens/home/master_screen.dart';
 import 'package:dream_pos/data/models/response/outlet_reponse_model.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/form_item_category_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/item_categories/item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/list_item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/form_regis_outlet_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/list_outlet_screen.dart';
@@ -81,12 +82,34 @@ class AppRouter {
           GoRoute(
             path: 'item-categories',
             name: 'master-item-categories',
-            builder: (context, state) => const ListItemCategoryScreen(),
+            builder: (context, state) => const ItemCategoryScreen(),
             routes: [
+              GoRoute(
+                path: 'list-item-category',
+                name: 'master-list-item-category',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  final selectedOutletId = payload?['outletId'] as String?;
+
+                  if (selectedOutletId == null || selectedOutletId.isEmpty) {
+                    return const ItemCategoryScreen();
+                  }
+
+                  return ListItemCategoryScreen(
+                    selectedOutletId: selectedOutletId,
+                    selectedOutletName: payload?['outletName'] as String?,
+                  );
+                },
+              ),
               GoRoute(
                 path: 'form-item-category',
                 name: 'master-form-item-category',
-                builder: (context, state) => const FormItemCategoryScreen(),
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  return FormItemCategoryScreen(
+                    selectedOutletId: payload?['selectedOutletId'] as String?,
+                  );
+                },
               ),
             ],
           ),

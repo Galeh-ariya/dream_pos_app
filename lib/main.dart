@@ -1,3 +1,6 @@
+import 'package:dream_pos/bloc/item_categories/del_item_category/del_item_category_bloc.dart';
+import 'package:dream_pos/bloc/item_categories/list_item_category/list_item_category_bloc.dart';
+import 'package:dream_pos/bloc/item_categories/store_item_category/store_item_category_bloc.dart';
 import 'package:dream_pos/bloc/outlets/del_outlet/del_outlet_bloc.dart';
 import 'package:dream_pos/bloc/outlets/list_outlet/list_outlet_bloc.dart';
 import 'package:dream_pos/bloc/login/login_bloc.dart';
@@ -8,6 +11,7 @@ import 'package:dream_pos/bloc/units/del_unit/del_unit_bloc.dart';
 import 'package:dream_pos/bloc/units/list_unit/list_unit_bloc.dart';
 import 'package:dream_pos/bloc/units/store_unit/store_unit_bloc.dart';
 import 'package:dream_pos/data/repositories/auth_repository.dart';
+import 'package:dream_pos/data/repositories/item_categories_repository.dart';
 import 'package:dream_pos/data/repositories/outlets_repository.dart';
 import 'package:dream_pos/data/repositories/units_repository.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +48,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => StoreUnitBloc(UnitRepository())),
         BlocProvider(create: (context) => ListUnitBloc(UnitRepository())),
         BlocProvider(create: (context) => DelUnitBloc(UnitRepository())),
+        BlocProvider(create: (context) => ListItemCategoryBloc(ItemCategoriesRepository())),
+        BlocProvider(create: (context) => DelItemCategoryBloc(ItemCategoriesRepository())),
+        BlocProvider(create: (context) => StoreItemCategoryBloc(ItemCategoriesRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,

@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:dream_pos/data/models/response/unit_response_model.dart';
-import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UnitRepository {
