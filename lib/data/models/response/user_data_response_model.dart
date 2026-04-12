@@ -4,7 +4,7 @@ class UserDataModel {
     final String? id;
     final String? fullName;
     final String? role;
-    final dynamic jabatanId;
+    final int? jabatanId;
     final String? email;
     final List<Outlet>? outlets;
 
@@ -21,7 +21,7 @@ class UserDataModel {
         String? id,
         String? fullName,
         String? role,
-        dynamic jabatanId,
+        int? jabatanId,
         String? email,
         List<Outlet>? outlets,
     }) => 
@@ -42,7 +42,7 @@ class UserDataModel {
         id: json["id"],
         fullName: json["full_name"],
         role: json["role"],
-        jabatanId: json["jabatan_id"],
+        jabatanId: json["jabatan_id"] is String ? int.parse(json["jabatan_id"]) : json["jabatan_id"] as int?,
         email: json["email"],
         outlets: json["outlets"] == null ? [] : List<Outlet>.from(json["outlets"]!.map((x) => Outlet.fromMap(x))),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/colors.dart';
+import 'cashier_screen.dart';
 import 'home_screen.dart';
 import 'master_screen.dart';
 import 'setting_screen.dart';
@@ -17,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final pages = [
     const HomeScreen(),
-    const _KasirScreen(),
+    const CashierScreen(),
     const MasterScreen(),
     const SettingScreen(),
   ];
@@ -112,41 +113,6 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Placeholder Screens
-class _KasirScreen extends StatelessWidget {
-  const _KasirScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: AppColors.surfaceContainerLowest,
-        elevation: 0,
-        title: Text(
-          'KASIR',
-          style: GoogleFonts.inter(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.onSurface,
-            letterSpacing: -0.3,
-          ),
-        ),
-      ),
-      body: Center(
-        child: Text(
-          'Kasir Screen - Coming Soon',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: AppColors.onSurfaceVariant,
           ),
         ),
       ),

@@ -1,9 +1,11 @@
 import 'package:dream_pos/bloc/login/login_bloc.dart';
+import 'package:dream_pos/data/repositories/access_local_repository.dart';
 import 'package:dream_pos/data/repositories/auth_local_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/colors.dart';
 import 'package:flutter/services.dart';
 
@@ -26,6 +28,21 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController = TextEditingController();
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  Future<void> saveDataHandle(AuthResponse data) async {
+    final authLocalRepository = AuthLocalRepository();
+    final accessLocalRepository = AccessLocalRepository();
+
+    await authLocalRepository.saveUserData(data);
+
+    final userData = await authLocalRepository.getUserData();
+
+    final jabatanId = userData?.jabatanId;
+
+    if (jabatanId != null) {
+      await accessLocalRepository.saveAccess(jabatanId);
+    }
   }
 
   @override
@@ -262,8 +279,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: BlocConsumer<LoginBloc, LoginState>(
                           listener: (context, state) {
                             state.maybeWhen(
-                              success: (data) {
-                                AuthLocalRepository().saveUserData(data);
+                              success: (data) async {
+                                await saveDataHandle(data);
+                                if (!mounted) return;
+                                // ignore: use_build_context_synchronously
                                 context.go('/');
                               },
                               error: (error) {

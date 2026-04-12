@@ -9,6 +9,22 @@ class AuthRepository {
     String password,
   ) async {
     try {
+      final result = await supabase
+          .from('profiles')
+          .select('''
+        deleted_at
+      ''')
+          .eq('email', email)
+          .maybeSingle();
+
+      if (result != null && result['deleted_at'] != null) {
+        return Left('This account has been deleted.');
+      }
+    } catch (e) {
+      return Left('An error occurred while checking account status.');
+    }
+
+    try {
       final AuthResponse res = await supabase.auth.signInWithPassword(
         email: email,
         password: password,

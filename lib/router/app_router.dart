@@ -9,6 +9,8 @@ import 'package:dream_pos/presentation/screens/masters/employees/list_employee_s
 import 'package:dream_pos/presentation/screens/masters/item_categories/form_item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/list_item_category_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/access/access_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/access/list_access_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/form_regis_outlet_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/list_outlet_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/positions/form_position_screen.dart';
@@ -17,6 +19,7 @@ import 'package:dream_pos/presentation/screens/masters/positions/position_screen
 import 'package:dream_pos/presentation/screens/masters/units/form_unit_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/units/list_unit_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/units/unit_screen.dart';
+// import 'package:dream_pos/presentation/widgets/access_denied_widget.dart';
 import 'package:dream_pos/presentation/widgets/loading_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,6 +38,30 @@ class AppRouter {
         name: 'master',
         builder: (context, state) => const MasterScreen(),
         routes: [
+          GoRoute(
+            path: 'access',
+            name: 'master-access',
+            builder: (context, state) => const AccessScreen(),
+            routes: [
+              GoRoute(
+                path: 'list-access',
+                name: 'master-list-access',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  final selectedOutletId = payload?['outletId'] as String?;
+
+                  if (selectedOutletId == null || selectedOutletId.isEmpty) {
+                    return const AccessScreen();
+                  }
+
+                  return ListAccessScreen(
+                    selectedOutletId: selectedOutletId,
+                    selectedOutletName: payload?['outletName'] as String?,
+                  );
+                },
+              ),
+            ],
+          ),
           GoRoute(
             path: 'outlets',
             name: 'master-outlets',

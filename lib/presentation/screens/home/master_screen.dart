@@ -26,6 +26,14 @@ class MasterScreen extends StatelessWidget {
         onTap: () => context.push('/master/outlets'),
       ),
       _MasterMenuItem(
+        title: 'Kelola Hak Akses',
+        subtitle: 'Pengaturan hak akses dan profil pengguna sistem.',
+        icon: Icons.security_outlined,
+        iconColor: Color(0xFF2F6CFF),
+        iconBackground: Color(0xFFD9E7FF),
+        onTap: () => context.push('/master/access'),
+      ),
+      _MasterMenuItem(
         title: 'Kelola Karyawan',
         subtitle: 'Pengaturan hak akses dan profil pengguna sistem.',
         icon: Icons.person_outline_rounded,

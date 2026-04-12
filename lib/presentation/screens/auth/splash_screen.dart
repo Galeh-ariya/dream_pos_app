@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:dream_pos/data/models/response/user_data_response_model.dart';
+import 'package:dream_pos/data/repositories/access_local_repository.dart';
 import 'package:dream_pos/data/repositories/auth_local_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:dream_pos/core/index.dart';
@@ -44,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  Future<String> fetchUser(session) async {
+  Future<void> fetchUser(session) async {
     final id = session?.user.id;
     // debugPrint('Current User ID: $id');
 
@@ -65,7 +66,13 @@ class _SplashScreenState extends State<SplashScreen>
       final userModel = UserDataModel.fromJson(jsonEncode(data[0]));
       await AuthLocalRepository().updateUserData(userModel);
     }
-    return data.toString();
+
+    final userData = await AuthLocalRepository().getUserData();
+    final jabatanId = userData?.jabatanId;
+    
+    if (jabatanId != null) {
+      await AccessLocalRepository().saveAccess(jabatanId);
+    }
   }
 
   @override
