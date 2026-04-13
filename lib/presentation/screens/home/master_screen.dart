@@ -26,6 +26,14 @@ class MasterScreen extends StatelessWidget {
         onTap: () => context.push('/master/outlets'),
       ),
       _MasterMenuItem(
+        title: 'Kelola Jabatan',
+        subtitle: 'Pengaturan jabatan untuk setiap karyawan.',
+        icon: Icons.badge_outlined,
+        iconColor: Color(0xFF2F6CFF),
+        iconBackground: Color(0xFFDCE5FF),
+        onTap: () => context.push('/master/positions'),
+      ),
+      _MasterMenuItem(
         title: 'Kelola Hak Akses',
         subtitle: 'Pengaturan hak akses dan profil pengguna sistem.',
         icon: Icons.security_outlined,
@@ -42,19 +50,12 @@ class MasterScreen extends StatelessWidget {
         onTap: () => context.push('/master/employee'),
       ),
       _MasterMenuItem(
-        title: 'Kelola Jabatan',
-        subtitle: 'Pengaturan jabatan untuk setiap karyawan.',
-        icon: Icons.badge_outlined,
+        title: 'Kelola Satuan',
+        subtitle: 'Definisi unit pengukuran untuk setiap item barang.',
+        icon: Icons.straighten_rounded,
         iconColor: Color(0xFF2F6CFF),
-        iconBackground: Color(0xFFDCE5FF),
-        onTap: () => context.push('/master/positions'),
-      ),
-      const _MasterMenuItem(
-        title: 'Kelola Item',
-        subtitle: 'Manajemen stok barang gudang.',
-        icon: Icons.inventory_2_outlined,
-        iconColor: Color(0xFF2F6CFF),
-        iconBackground: Color(0xFFDCE5FF),
+        iconBackground: Color(0xFFE9EDF3),
+        onTap: () => context.push('/master/units'),
       ),
       _MasterMenuItem(
         title: 'Kelola Kategori Barang',
@@ -64,13 +65,12 @@ class MasterScreen extends StatelessWidget {
         iconBackground: Color(0xFFDCE5FF),
         onTap: () => context.push('/master/item-categories'),
       ),
-      _MasterMenuItem(
-        title: 'Kelola Satuan',
-        subtitle: 'Definisi unit pengukuran untuk setiap item barang.',
-        icon: Icons.straighten_rounded,
+      const _MasterMenuItem(
+        title: 'Kelola Item',
+        subtitle: 'Manajemen stok barang gudang.',
+        icon: Icons.inventory_2_outlined,
         iconColor: Color(0xFF2F6CFF),
-        iconBackground: Color(0xFFE9EDF3),
-        onTap: () => context.push('/master/units'),
+        iconBackground: Color(0xFFDCE5FF),
       ),
     ];
 

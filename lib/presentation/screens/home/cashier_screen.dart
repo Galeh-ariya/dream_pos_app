@@ -126,71 +126,99 @@ class _CashierScreenState extends State<CashierScreen> {
   }
 
   Widget _buildContent(List<OutletResponseModel> outlets) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-      children: [
-        Text(
-          'Kasir',
-          style: GoogleFonts.inter(
-            fontSize: 26,
-            fontWeight: FontWeight.w800,
-            color: AppColors.onSurface,
-            letterSpacing: -0.6,
+    final size = MediaQuery.sizeOf(context);
+    final isLandscape = size.width > size.height;
+    final isTablet = size.shortestSide >= 600;
+    final crossAxisCount = isTablet
+        ? (isLandscape ? 4 : 3)
+        : (isLandscape ? 3 : 2);
+    final gridSpacing = isTablet ? 16.0 : 12.0;
+    final childAspectRatio = isTablet && isLandscape ? 1.12 : 1.0;
+    final contentMaxWidth = isTablet ? 1220.0 : 700.0;
+    final horizontalPadding = isTablet ? 24.0 : 16.0;
+    final verticalTopPadding = isTablet ? 20.0 : 12.0;
+    final sectionPadding = isTablet ? 18.0 : 14.0;
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: contentMaxWidth),
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            verticalTopPadding,
+            horizontalPadding,
+            24,
           ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          'Pilih outlet yang ingin dibuka untuk transaksi kasir.',
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppColors.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.outlineVariant.withOpacity(0.14),
+          children: [
+            Text(
+              'Kasir',
+              style: GoogleFonts.inter(
+                fontSize: isTablet ? 32 : 26,
+                fontWeight: FontWeight.w800,
+                color: AppColors.onSurface,
+                letterSpacing: -0.6,
+              ),
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Outlet Aktif',
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.onSurfaceVariant,
-                  letterSpacing: 0.2,
+            const SizedBox(height: 6),
+            Text(
+              'Pilih outlet yang ingin dibuka untuk transaksi kasir.',
+              style: GoogleFonts.inter(
+                fontSize: isTablet ? 15 : 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: EdgeInsets.all(sectionPadding),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: AppColors.outlineVariant.withOpacity(0.14),
                 ),
               ),
-              const SizedBox(height: 12),
-              if (outlets.isEmpty)
-                _buildEmptyState()
-              else
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: outlets.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 1.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Outlet Aktif',
+                    style: GoogleFonts.inter(
+                      fontSize: isTablet ? 14 : 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onSurfaceVariant,
+                      letterSpacing: 0.2,
+                    ),
                   ),
-                  itemBuilder: (context, index) {
-                    return _buildOutletCard(outlets[index], index);
-                  },
-                ),
-            ],
-          ),
+                  const SizedBox(height: 12),
+                  if (outlets.isEmpty)
+                    _buildEmptyState()
+                  else
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: outlets.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: gridSpacing,
+                        crossAxisSpacing: gridSpacing,
+                        childAspectRatio: childAspectRatio,
+                      ),
+                      itemBuilder: (context, index) {
+                        return _buildOutletCard(
+                          outlets[index],
+                          index,
+                          isTablet: isTablet,
+                        );
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -241,7 +269,11 @@ class _CashierScreenState extends State<CashierScreen> {
     );
   }
 
-  Widget _buildOutletCard(OutletResponseModel outlet, int index) {
+  Widget _buildOutletCard(
+    OutletResponseModel outlet,
+    int index, {
+    required bool isTablet,
+  }) {
     final outletName = outlet.name?.trim().isNotEmpty == true
         ? outlet.name!.trim()
         : '-';
@@ -254,7 +286,7 @@ class _CashierScreenState extends State<CashierScreen> {
       onTap: () => _openCashier(outlet),
       borderRadius: BorderRadius.circular(18),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(isTablet ? 16 : 14),
         decoration: BoxDecoration(
           color: AppColors.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(18),
@@ -273,23 +305,23 @@ class _CashierScreenState extends State<CashierScreen> {
             Row(
               children: [
                 Container(
-                  width: 42,
-                  height: 42,
+                  width: isTablet ? 48 : 42,
+                  height: isTablet ? 48 : 42,
                   decoration: BoxDecoration(
                     color: accent.iconBackground,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.store_rounded,
                     color: AppColors.primary,
-                    size: 22,
+                    size: isTablet ? 24 : 22,
                   ),
                 ),
                 const Spacer(),
                 Icon(
                   Icons.chevron_right_rounded,
                   color: accent.iconColor,
-                  size: 24,
+                  size: isTablet ? 26 : 24,
                 ),
               ],
             ),
@@ -299,7 +331,7 @@ class _CashierScreenState extends State<CashierScreen> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.inter(
-                fontSize: 15,
+                fontSize: isTablet ? 16 : 15,
                 fontWeight: FontWeight.w800,
                 color: AppColors.onSurface,
                 height: 1.2,
@@ -311,7 +343,7 @@ class _CashierScreenState extends State<CashierScreen> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.inter(
-                fontSize: 11.5,
+                fontSize: isTablet ? 12.5 : 11.5,
                 fontWeight: FontWeight.w500,
                 color: AppColors.onSurfaceVariant,
                 height: 1.35,

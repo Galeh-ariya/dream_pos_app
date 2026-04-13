@@ -1,3 +1,7 @@
+import 'package:dream_pos/bloc/access/bulk_access/bulk_access_bloc.dart';
+import 'package:dream_pos/bloc/access/del_access/del_access_bloc.dart';
+import 'package:dream_pos/bloc/access/list_access/list_access_bloc.dart';
+import 'package:dream_pos/bloc/access/status_access/status_access_bloc.dart';
 import 'package:dream_pos/bloc/employees/list_employee/list_employee_bloc.dart';
 import 'package:dream_pos/bloc/employees/store_employee/store_employee_bloc.dart';
 import 'package:dream_pos/bloc/item_categories/del_item_category/del_item_category_bloc.dart';
@@ -15,6 +19,7 @@ import 'package:dream_pos/bloc/positions/store_position/store_position_bloc.dart
 import 'package:dream_pos/bloc/units/del_unit/del_unit_bloc.dart';
 import 'package:dream_pos/bloc/units/list_unit/list_unit_bloc.dart';
 import 'package:dream_pos/bloc/units/store_unit/store_unit_bloc.dart';
+import 'package:dream_pos/data/repositories/access_repository.dart';
 import 'package:dream_pos/data/repositories/auth_repository.dart';
 import 'package:dream_pos/data/repositories/employee_repository.dart';
 import 'package:dream_pos/data/repositories/item_categories_repository.dart';
@@ -63,6 +68,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => DelPositionBloc(PositionRepository())),
         BlocProvider(create: (context) => ListEmployeeBloc(EmployeeRepository())),
         BlocProvider(create: (context) => StoreEmployeeBloc(EmployeeRepository())),
+        BlocProvider(create: (context) => ListAccessBloc(AccessRepository())),
+        BlocProvider(create: (context) => BulkAccessBloc(AccessRepository())),
+        BlocProvider(create: (context) => StatusAccessBloc(AccessRepository())),
+        BlocProvider(create: (context) => DelAccessBloc(AccessRepository())),
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,

@@ -10,6 +10,7 @@ import 'package:dream_pos/presentation/screens/masters/item_categories/form_item
 import 'package:dream_pos/presentation/screens/masters/item_categories/item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/item_categories/list_item_category_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/access/access_screen.dart';
+import 'package:dream_pos/presentation/screens/masters/access/form_access_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/access/list_access_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/form_regis_outlet_screen.dart';
 import 'package:dream_pos/presentation/screens/masters/outlets/list_outlet_screen.dart';
@@ -55,6 +56,23 @@ class AppRouter {
                   }
 
                   return ListAccessScreen(
+                    selectedOutletId: selectedOutletId,
+                    selectedOutletName: payload?['outletName'] as String?,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'form-access',
+                name: 'master-form-access',
+                builder: (context, state) {
+                  final payload = state.extra as Map<String, dynamic>?;
+                  final selectedOutletId = payload?['outletId'] as String?;
+
+                  if (selectedOutletId == null || selectedOutletId.isEmpty) {
+                    return const AccessScreen();
+                  }
+
+                  return FormAccessScreen(
                     selectedOutletId: selectedOutletId,
                     selectedOutletName: payload?['outletName'] as String?,
                   );

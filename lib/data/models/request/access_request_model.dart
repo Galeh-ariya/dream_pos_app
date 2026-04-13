@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class AccessResponseModel {
+class AccessRequestModel {
   final String? id;
   final String? outletId;
   final int? jabatanId;
@@ -8,7 +8,7 @@ class AccessResponseModel {
   final String? namaAkses;
   final bool? valueAkses;
 
-  AccessResponseModel({
+  AccessRequestModel({
     this.id,
     this.outletId,
     this.jabatanId,
@@ -17,14 +17,14 @@ class AccessResponseModel {
     this.valueAkses,
   });
 
-  AccessResponseModel copyWith({
+  AccessRequestModel copyWith({
     String? id,
     String? outletId,
     int? jabatanId,
     String? kategoriMenu,
     String? namaAkses,
     bool? valueAkses,
-  }) => AccessResponseModel(
+  }) => AccessRequestModel(
     id: id ?? this.id,
     outletId: outletId ?? this.outletId,
     jabatanId: jabatanId ?? this.jabatanId,
@@ -33,13 +33,13 @@ class AccessResponseModel {
     valueAkses: valueAkses ?? this.valueAkses,
   );
 
-  factory AccessResponseModel.fromJson(String str) =>
-      AccessResponseModel.fromMap(json.decode(str));
+  factory AccessRequestModel.fromJson(String str) =>
+      AccessRequestModel.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory AccessResponseModel.fromMap(Map<String, dynamic> json) =>
-      AccessResponseModel(
+  factory AccessRequestModel.fromMap(Map<String, dynamic> json) =>
+      AccessRequestModel(
         id: json["id"],
         outletId: json["outlet_id"],
         jabatanId: json["jabatan_id"],
@@ -56,6 +56,21 @@ class AccessResponseModel {
     "nama_akses": namaAkses,
     "value_akses": valueAkses,
   };
+
+  // Payload insert mengabaikan id karena biasanya dihasilkan otomatis oleh database.
+  Map<String, dynamic> toInsertMap() => {
+    "outlet_id": outletId,
+    "jabatan_id": jabatanId,
+    "kategori_menu": kategoriMenu,
+    "nama_akses": namaAkses,
+    "value_akses": valueAkses,
+  };
+
+  static List<Map<String, dynamic>> toInsertPayload(
+    List<AccessRequestModel> items,
+  ) {
+    return items.map((item) => item.toInsertMap()).toList(growable: false);
+  }
 
   static bool? _parseBool(dynamic value) {
     if (value == null) return null;
